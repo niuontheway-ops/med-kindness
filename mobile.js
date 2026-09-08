@@ -4,6 +4,9 @@ const STORAGE_KEY = "med-kindness-progress-v1";
 const INITIAL_SCORE = 60;
 const $ = (selector) => document.querySelector(selector);
 const clamp = (value) => Math.min(100, Math.max(0, value));
+const mobileAsset = (path) => path
+  .replace(/^assets\//, "assets/mobile/")
+  .replace(/\.png$/i, ".webp");
 
 const els = {
   home: $("#mobileHomeView"),
@@ -130,8 +133,8 @@ function renderCases() {
       <article class="mobile-case-card">
         ${record ? `<span class="mobile-complete">最佳 ${record.bestScore}</span>` : ""}
         <div class="mobile-case-art">
-          <img src="${scenario.background}" alt="">
-          <img class="mobile-case-actor" src="${scenario.actor}" alt="">
+          <img src="${mobileAsset(scenario.background)}" alt="" loading="lazy" decoding="async">
+          <img class="mobile-case-actor" src="${mobileAsset(scenario.actor)}" alt="" loading="lazy" decoding="async">
           <span class="mobile-case-index">${String(index + 1).padStart(2, "0")}</span>
         </div>
         <div class="mobile-case-body">
@@ -164,12 +167,12 @@ function startCase(index) {
   const scenario = SCENARIOS[index];
   els.playerCategory.textContent = `${scenario.category} · ${scenario.difficulty}`;
   els.playerTitle.textContent = scenario.title;
-  els.stageBg.src = scenario.background;
+  els.stageBg.src = mobileAsset(scenario.background);
   els.stageBg.alt = scenario.scene;
-  els.stageActor.src = scenario.actor;
+  els.stageActor.src = mobileAsset(scenario.actor);
   els.stageActor.alt = scenario.actorName;
   els.sceneLabel.textContent = scenario.scene;
-  els.avatar.style.backgroundImage = `url("${scenario.actor}")`;
+  els.avatar.style.backgroundImage = `url("${mobileAsset(scenario.actor)}")`;
   history.replaceState(null, "", `#case=${scenario.id}`);
   renderMetrics();
   renderEvidence();
@@ -328,7 +331,7 @@ function finishCase() {
 
   writeProgress(scenario.id, total);
   updateCompletedCount();
-  els.resultBg.src = scenario.background;
+  els.resultBg.src = mobileAsset(scenario.background);
   els.resultBg.alt = scenario.scene;
   els.resultSeal.textContent = outcome.seal;
   els.resultTitle.textContent = outcome.title;

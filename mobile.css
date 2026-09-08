@@ -10,6 +10,7 @@
   --m-coral-soft: #f6e0d7;
   --m-gold: #c49749;
   --m-red: #a94c46;
+  --m-sans: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", system-ui, sans-serif;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -24,7 +25,7 @@ body {
   background:
     radial-gradient(circle at 92% 4%, rgba(201, 101, 80, .11), transparent 26%),
     var(--m-cream);
-  font-family: "Noto Sans SC", system-ui, sans-serif;
+  font-family: var(--m-sans);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
 }

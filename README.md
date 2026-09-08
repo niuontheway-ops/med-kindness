@@ -9,11 +9,12 @@
 - 在线地址：[https://niuontheway-ops.github.io/med-kindness/](https://niuontheway-ops.github.io/med-kindness/)
 - 入口文件：`index.html`
 - 针对竖屏、触控和单手操作设计，使用单栏对话、横向能力条和大尺寸选项。
+- 使用按手机实际显示尺寸生成的 WebP 素材，并对病例卡图片延迟加载；电脑本地版继续保留高清 PNG。
 - 支持病例深链接、本机进度和“第一个未完成病例”快捷入口。
 
-二维码文件位于 `assets/med-kindness-qr.png`：
+横版二维码文件位于 `assets/hulan-github-mobile-qr.png`，保留“壶兰呼吸”院科标识并指向 GitHub Pages 手机版：
 
-![手机扫码入口](assets/med-kindness-qr.png)
+![手机扫码入口](assets/hulan-github-mobile-qr.png)
 
 ### 2. 电脑本地版
 

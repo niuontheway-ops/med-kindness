@@ -1,4 +1,4 @@
-import { access } from "node:fs/promises";
+import { access, stat } from "node:fs/promises";
 import { SCENARIOS, METRICS, CATEGORIES } from "../scenarios.js";
 
 const failures = [];
@@ -13,7 +13,8 @@ for (const required of [
   "../desktop.html",
   "../styles.css",
   "../app.js",
-  "../assets/med-kindness-qr.png"
+  "../assets/med-kindness-qr.png",
+  "../assets/hulan-github-mobile-qr.png"
 ]) {
   try {
     await access(new URL(required, import.meta.url));
@@ -48,6 +49,14 @@ for (const scenario of SCENARIOS) {
       await access(new URL(`../${asset}`, import.meta.url));
     } catch {
       failures.push(`${scenario.id} 缺少素材：${asset}`);
+    }
+
+    const mobileAsset = asset.replace(/^assets\//, "assets/mobile/").replace(/\.png$/i, ".webp");
+    try {
+      const mobileStat = await stat(new URL(`../${mobileAsset}`, import.meta.url));
+      if (mobileStat.size > 150_000) failures.push(`${scenario.id} 手机素材过大：${mobileAsset}`);
+    } catch {
+      failures.push(`${scenario.id} 缺少手机素材：${mobileAsset}`);
     }
   }
 }
