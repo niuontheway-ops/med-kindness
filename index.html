@@ -2,270 +2,155 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="有温度的问诊室：面向住院医师与实习医师的医学沟通情境训练。">
-  <title>有温度的问诊室</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f2e8">
+  <meta name="description" content="有温度的问诊室手机版：面向住院医师与实习医师的临床沟通情境训练。">
+  <title>有温度的问诊室 · 手机版</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;900&family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="mobile.css">
 </head>
 <body>
-  <a class="skip-link" href="#main">跳至主要内容</a>
+  <a class="skip-link" href="#mobileMain">跳至主要内容</a>
 
-  <header class="topbar">
-    <button class="brand" id="homeButton" type="button" aria-label="返回首页">
-      <span class="brand-mark" aria-hidden="true">温</span>
-      <span>
-        <strong>有温度的问诊室</strong>
-        <small>Clinical Conversation Studio</small>
-      </span>
+  <header class="mobile-topbar">
+    <button class="mobile-brand" id="mobileHomeButton" type="button" aria-label="返回病例库">
+      <span aria-hidden="true">温</span>
+      <strong>有温度的问诊室</strong>
     </button>
-    <nav class="top-actions" aria-label="主导航">
-      <button class="nav-button active" id="caseLibraryButton" type="button">病例库</button>
-      <button class="nav-button" id="progressButton" type="button">学习记录</button>
-      <button class="nav-button" id="aboutButton" type="button">教学说明</button>
-    </nav>
+    <button class="progress-pill" id="mobileProgressButton" type="button">
+      <span id="mobileCompletedCount">0</span>/10 已完成
+    </button>
   </header>
 
-  <main id="main">
-    <section class="home-view" id="homeView">
-      <div class="intro-panel">
-        <div class="intro-copy">
-          <p class="eyebrow">给住院医师与实习医师的沉浸式沟通训练</p>
-          <h1>医学不止要回答<br><em>“发生了什么”</em></h1>
-          <p class="intro-lead">还要与患者和家属共同面对：下一步怎么办、谁来决定，以及怎样让每一句话都经得起临床与人心的考验。</p>
-          <div class="intro-stats" aria-label="课程概览">
-            <div><strong id="caseCount">10</strong><span>深度病例</span></div>
-            <div><strong id="roundCount">80</strong><span>对话回合</span></div>
-            <div><strong>5</strong><span>能力维度</span></div>
-          </div>
+  <main id="mobileMain">
+    <section class="mobile-home" id="mobileHomeView">
+      <section class="mobile-hero">
+        <div class="hero-visual" aria-hidden="true">
+          <img src="assets/room-bg.png" alt="">
+          <img class="hero-doctor" src="assets/doctor.png" alt="">
+          <span>手机版</span>
         </div>
-        <div class="intro-art" aria-hidden="true">
-          <div class="sun-glow"></div>
-          <img class="intro-room" src="assets/room-bg.png" alt="">
-          <img class="intro-doctor" src="assets/doctor.png" alt="">
-          <div class="paper-note">
-            <span>今日练习</span>
-            <strong>先理解人，再讨论选择。</strong>
-          </div>
+        <div class="hero-copy">
+          <p class="mobile-eyebrow">临床沟通情境训练</p>
+          <h1>一句话，<br>可能改变整场会谈。</h1>
+          <p>不是选“最温柔的话”，而是在有限时间里同时照顾医学事实、危险信号与人的感受。</p>
+          <button class="mobile-primary" id="quickStartButton" type="button">开始第一个未完成病例</button>
         </div>
-      </div>
+      </section>
 
-      <section class="library-section" aria-labelledby="libraryTitle">
-        <div class="section-heading">
+      <section class="mobile-library" aria-labelledby="mobileLibraryTitle">
+        <div class="mobile-section-title">
           <div>
-            <p class="eyebrow">情境课程</p>
-            <h2 id="libraryTitle">选择一场需要认真倾听的谈话</h2>
+            <p class="mobile-eyebrow">10 个深度情境</p>
+            <h2 id="mobileLibraryTitle">选择病例</h2>
           </div>
-          <div class="library-tools">
-            <label class="search-box">
-              <span class="sr-only">搜索病例</span>
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"/></svg>
-              <input id="caseSearch" type="search" placeholder="搜索情境、角色或主题">
-            </label>
-          </div>
+          <button class="filter-trigger" id="filterTrigger" type="button" aria-expanded="false">筛选</button>
         </div>
-
-        <div class="filter-row" id="filterRow" aria-label="病例分类"></div>
-        <div class="case-grid" id="caseGrid"></div>
-        <p class="empty-state" id="emptyState" hidden>没有匹配的病例，换个关键词试试。</p>
+        <div class="mobile-filters" id="mobileFilters" hidden></div>
+        <label class="mobile-search">
+          <span aria-hidden="true">⌕</span>
+          <span class="sr-only">搜索病例</span>
+          <input id="mobileSearch" type="search" placeholder="搜索疾病、情境或角色">
+        </label>
+        <div class="mobile-case-list" id="mobileCaseList"></div>
       </section>
 
-      <section class="learning-model" aria-labelledby="modelTitle">
-        <div class="model-copy">
-          <p class="eyebrow">不是“情商选择题”</p>
-          <h2 id="modelTitle">温度与临床判断，缺一不可</h2>
-          <p>只说温柔的话，可能漏掉危险信号；只把信息问全，也可能失去信任。每个选择都会改变五项能力，并决定你最终能否与对方形成安全、可理解、可执行的方案。</p>
-        </div>
-        <div class="dimension-list" id="dimensionList"></div>
-      </section>
+      <footer class="mobile-footer">
+        <strong>教学模拟，不替代真实诊疗或机构流程。</strong>
+        <p>需要电脑端完整三栏视图？请在电脑本地打开 <code>desktop.html</code>。</p>
+        <a href="desktop.html">预览电脑本地版</a>
+      </footer>
     </section>
 
-    <section class="case-view" id="caseView" hidden aria-live="polite">
-      <div class="case-toolbar">
-        <button class="back-button" id="backButton" type="button">
-          <span aria-hidden="true">←</span> 返回病例库
-        </button>
-        <div class="case-toolbar-title">
-          <span id="caseCategory">—</span>
-          <strong id="caseTitle">—</strong>
+    <section class="mobile-player" id="mobilePlayerView" hidden aria-live="polite">
+      <div class="player-sticky-head">
+        <button class="round-back" id="mobileBackButton" type="button" aria-label="返回病例库">←</button>
+        <div>
+          <small id="mobilePlayerCategory">—</small>
+          <strong id="mobilePlayerTitle">—</strong>
         </div>
-        <button class="plain-button" id="restartButton" type="button">重新开始</button>
+        <button class="round-restart" id="mobileRestartButton" type="button">重来</button>
+        <div class="round-progress"><span id="mobileProgressFill"></span></div>
       </div>
 
-      <div class="play-layout">
-        <aside class="case-rail" aria-label="病例进度">
-          <div class="rail-card">
-            <p class="rail-label">当前任务</p>
-            <h2 id="caseGoal">—</h2>
-            <p id="caseBrief">—</p>
+      <div class="mobile-stage" id="mobileStage">
+        <img class="mobile-stage-bg" id="mobileStageBg" src="assets/room-bg.png" alt="诊疗场景">
+        <div class="mobile-stage-shade"></div>
+        <img class="mobile-stage-doctor" src="assets/doctor.png" alt="医生">
+        <img class="mobile-stage-actor" id="mobileStageActor" src="assets/lin-lan.png" alt="患者或家属">
+        <span class="mobile-scene-label" id="mobileSceneLabel">—</span>
+      </div>
+
+      <div class="mobile-metric-strip" id="mobileMetricStrip" aria-label="能力变化"></div>
+
+      <article class="mobile-dialogue-card">
+        <div class="mobile-round-meta">
+          <span id="mobileRoundStage">场景序幕</span>
+          <strong id="mobileRoundNumber">0 / 8</strong>
+        </div>
+        <div class="mobile-speaker">
+          <div class="mobile-avatar" id="mobileAvatar" aria-hidden="true"></div>
+          <div>
+            <strong id="mobileSpeakerName">场景旁白</strong>
+            <p id="mobileDialogueText">—</p>
           </div>
+        </div>
+        <blockquote class="mobile-opening-quote" id="mobileOpeningQuote" hidden></blockquote>
+        <p class="mobile-prompt" id="mobilePrompt">你会怎样回应？</p>
+        <div class="mobile-options" id="mobileOptions"></div>
 
-          <div class="progress-card">
-            <div class="progress-label">
-              <span>谈话进度</span>
-              <strong id="roundIndicator">1 / 8</strong>
-            </div>
-            <div class="progress-track"><span id="progressFill"></span></div>
-            <ol class="round-dots" id="roundDots" aria-label="回合进度"></ol>
+        <section class="mobile-feedback" id="mobileFeedback" hidden>
+          <div class="mobile-feedback-title">
+            <strong id="mobileFeedbackRating">回应评析</strong>
+            <span id="mobileDeltaSummary"></span>
           </div>
-
-          <div class="evidence-card">
-            <div class="evidence-heading">
-              <span>已获得的关键信息</span>
-              <strong id="evidenceCount">0</strong>
-            </div>
-            <ul id="evidenceList">
-              <li class="evidence-placeholder">通过有效沟通发现信息</li>
-            </ul>
+          <blockquote id="mobileActorReply">—</blockquote>
+          <div class="mobile-teaching">
+            <strong>带教点评</strong>
+            <p id="mobileFeedbackText">—</p>
           </div>
-        </aside>
-
-        <section class="stage-column">
-          <div class="stage" id="stage">
-            <img class="stage-bg" id="stageBackground" src="assets/room-bg.png" alt="温暖的诊室背景">
-            <div class="stage-vignette"></div>
-            <img class="stage-doctor" src="assets/doctor.png" alt="医生">
-            <img class="stage-actor" id="stageActor" src="assets/lin-lan.png" alt="患者或家属">
-            <div class="scene-label" id="sceneLabel">门诊诊室 · 下午</div>
-            <div class="speaker-card doctor-tag">你 · 接诊医生</div>
-            <div class="speaker-card actor-tag" id="actorTag">患者</div>
-          </div>
-
-          <article class="conversation-card" id="conversationCard">
-            <div class="conversation-meta">
-              <span class="stage-chip" id="roundStage">建立关系</span>
-              <span id="roundNumber">第 1 回合</span>
-            </div>
-            <div class="speaker-line">
-              <div class="avatar" id="speakerAvatar" aria-hidden="true"></div>
-              <div>
-                <strong id="speakerName">患者</strong>
-                <p id="dialogueText">—</p>
-              </div>
-            </div>
-            <p class="coach-prompt" id="coachPrompt">你会怎样回应？</p>
-            <blockquote class="opening-quote" id="openingQuote" hidden></blockquote>
-            <div class="option-list" id="optionList"></div>
-
-            <section class="feedback-panel" id="feedbackPanel" hidden>
-              <div class="feedback-head">
-                <span class="feedback-rating" id="feedbackRating">回应评析</span>
-                <div class="delta-list" id="deltaList"></div>
-              </div>
-              <blockquote id="actorReply">—</blockquote>
-              <div class="teaching-note">
-                <strong>带教点评</strong>
-                <p id="feedbackText">—</p>
-              </div>
-              <button class="continue-button" id="continueButton" type="button">继续下一回合 <span aria-hidden="true">→</span></button>
-            </section>
-          </article>
+          <button class="mobile-primary" id="mobileContinueButton" type="button">继续下一回合</button>
         </section>
+      </article>
 
-        <aside class="score-rail" aria-label="能力仪表">
-          <div class="score-card">
-            <div class="score-heading">
-              <span>沟通能力仪表</span>
-              <button class="icon-button" id="metricHelpButton" type="button" aria-label="查看评分说明">?</button>
-            </div>
-            <div id="metricMeters"></div>
-          </div>
+      <details class="mobile-evidence">
+        <summary>已获得的关键信息 <span id="mobileEvidenceCount">0</span></summary>
+        <ul id="mobileEvidenceList"><li>通过有效沟通发现信息</li></ul>
+      </details>
 
-          <div class="clinical-note">
-            <span aria-hidden="true">✦</span>
-            <p><strong>临床提醒</strong><br><span id="clinicalReminder">—</span></p>
-          </div>
-
-          <button class="undo-button" id="undoButton" type="button" disabled>撤回上一回合</button>
-        </aside>
-      </div>
+      <button class="mobile-undo" id="mobileUndoButton" type="button" disabled>撤回上一回合</button>
     </section>
 
-    <section class="result-view" id="resultView" hidden>
-      <div class="result-shell">
-        <div class="result-visual">
-          <img id="resultBackground" src="assets/room-bg.png" alt="病例结局场景">
-          <div class="result-seal" id="resultSeal">完成</div>
-        </div>
-        <article class="result-content">
-          <p class="eyebrow">会谈复盘</p>
-          <h1 id="resultTitle">—</h1>
-          <p class="result-summary" id="resultSummary">—</p>
-          <div class="result-score">
-            <div><strong id="totalScore">0</strong><span>/ 100</span></div>
-            <p id="resultLevel">—</p>
-          </div>
-          <div class="result-metrics" id="resultMetrics"></div>
-          <section class="debrief-card">
-            <h2>本次谈话留下了什么</h2>
-            <div id="debriefContent"></div>
-          </section>
-          <div class="result-actions">
-            <button class="primary-button" id="retryButton" type="button">再次练习</button>
-            <button class="secondary-button" id="nextCaseButton" type="button">下一个病例</button>
-            <button class="text-button" id="resultHomeButton" type="button">返回病例库</button>
-          </div>
-        </article>
+    <section class="mobile-result" id="mobileResultView" hidden>
+      <div class="mobile-result-hero">
+        <img id="mobileResultBg" src="assets/room-bg.png" alt="病例结局场景">
+        <span id="mobileResultSeal">完成</span>
       </div>
-    </section>
-
-    <section class="info-view" id="progressView" hidden>
-      <div class="info-shell">
-        <button class="back-button info-back" type="button" data-go-home>← 返回病例库</button>
-        <p class="eyebrow">本机学习记录</p>
-        <h1>练习不是一次通关，而是看见自己的习惯</h1>
-        <p class="info-lead">记录只保存在当前浏览器，不上传患者信息或个人数据。</p>
-        <div class="progress-dashboard" id="progressDashboard"></div>
-      </div>
-    </section>
-
-    <section class="info-view" id="aboutView" hidden>
-      <div class="info-shell about-shell">
-        <button class="back-button info-back" type="button" data-go-home>← 返回病例库</button>
-        <p class="eyebrow">教学设计与边界</p>
-        <h1>怎样使用《有温度的问诊室》</h1>
-        <div class="about-grid">
-          <article>
-            <h2>训练目标</h2>
-            <p>在临床信息获取、危险信号识别、通俗解释、共情回应和共同决策之间取得平衡。系统不把一句话判成永远正确或错误，而是解释它在当前情境中的作用与代价。</p>
-          </article>
-          <article>
-            <h2>建议用法</h2>
-            <p>个人练习后，可由带教医师追问“如果患者换一种回答怎么办”。小组教学时，可先投票再比较不同选项造成的信息质量与信任变化。</p>
-          </article>
-          <article>
-            <h2>重要边界</h2>
-            <p>本项目是教学模拟，不替代真实诊疗、伦理会诊、机构流程或所在地法律。病例均为虚构组合，不对应真实患者。</p>
-          </article>
-          <article>
-            <h2>专家校验</h2>
-            <p>上线用于正式教学前，应由相关专科医师、医学伦理教师、护理团队及本机构法务/医务部门共同审阅，尤其是急症处置、决策能力、知情同意与生命末期内容。</p>
-          </article>
-        </div>
-
-        <section class="references">
-          <h2>主要教学依据</h2>
-          <ul>
-            <li>《内科学》（第10版）、《诊断学》（第10版）：病史采集、临床思维与相关疾病背景。</li>
-            <li><a href="https://www.nice.org.uk/guidance/ng197" target="_blank" rel="noreferrer">NICE NG197：Shared decision making</a>——议程设定、分块核对、复述确认与共同决策。</li>
-            <li><a href="https://www.sccm.org/clinical-resources/guidelines/guidelines/guidelines-on-family-centered-care-for-adult-icus-2024" target="_blank" rel="noreferrer">SCCM 2024 成人 ICU 家庭中心照护指南</a>——结构化家属会议与家庭支持。</li>
-            <li><a href="https://www.ahrq.gov/patient-safety/settings/hospital/candor/index.html" target="_blank" rel="noreferrer">AHRQ CANDOR</a>——医疗伤害事件后的及时、透明沟通与持续回应。</li>
-          </ul>
-          <p class="reference-note">页面中的经典名言采用常见中文意译，仅用于营造叙事情境；正式出版前请核对原始语种、版本与译文。人物与场景插画为本项目生成式原创素材。</p>
-        </section>
-      </div>
+      <article class="mobile-result-body">
+        <p class="mobile-eyebrow">会谈复盘</p>
+        <h1 id="mobileResultTitle">—</h1>
+        <div class="mobile-total-score"><strong id="mobileTotalScore">0</strong><span>/100</span></div>
+        <p id="mobileResultLevel">—</p>
+        <p id="mobileResultSummary">—</p>
+        <div class="mobile-result-metrics" id="mobileResultMetrics"></div>
+        <div class="mobile-debrief" id="mobileDebrief"></div>
+        <button class="mobile-primary" id="mobileNextCaseButton" type="button">下一个病例</button>
+        <button class="mobile-secondary" id="mobileRetryButton" type="button">再次练习</button>
+        <button class="mobile-text-button" id="mobileResultHomeButton" type="button">返回病例库</button>
+      </article>
     </section>
   </main>
 
-  <dialog class="metric-dialog" id="metricDialog">
-    <button class="dialog-close" id="metricDialogClose" type="button" aria-label="关闭">×</button>
-    <h2>五项能力如何变化</h2>
-    <div id="metricExplanations"></div>
-    <p>分数反映这一次模拟中的沟通过程，不是对个人临床能力的认证。</p>
+  <dialog class="mobile-progress-dialog" id="mobileProgressDialog">
+    <button class="mobile-dialog-close" id="mobileProgressClose" type="button" aria-label="关闭">×</button>
+    <p class="mobile-eyebrow">本机学习记录</p>
+    <h2>你的练习进度</h2>
+    <div id="mobileProgressList"></div>
+    <p class="privacy-note">成绩仅保存在当前浏览器，不上传个人或患者数据。</p>
   </dialog>
 
-  <script type="module" src="app.js"></script>
+  <script type="module" src="mobile.js"></script>
 </body>
 </html>

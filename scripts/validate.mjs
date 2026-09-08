@@ -6,6 +6,22 @@ const ids = new Set();
 const allowedQualities = new Set(["excellent", "caution", "risky"]);
 const metricKeys = new Set(Object.keys(METRICS));
 
+for (const required of [
+  "../index.html",
+  "../mobile.css",
+  "../mobile.js",
+  "../desktop.html",
+  "../styles.css",
+  "../app.js",
+  "../assets/med-kindness-qr.png"
+]) {
+  try {
+    await access(new URL(required, import.meta.url));
+  } catch {
+    failures.push(`缺少双版本必需文件：${required.replace("../", "")}`);
+  }
+}
+
 if (SCENARIOS.length < 10) failures.push(`病例数不足：${SCENARIOS.length}`);
 
 for (const scenario of SCENARIOS) {
@@ -44,4 +60,4 @@ if (failures.length) {
 
 const rounds = SCENARIOS.reduce((sum, scenario) => sum + scenario.rounds.length, 0);
 const options = SCENARIOS.reduce((sum, scenario) => sum + scenario.rounds.reduce((count, round) => count + round.options.length, 0), 0);
-console.log(`校验通过：${SCENARIOS.length} 个病例，${rounds} 个回合，${options} 个带教学反馈的选项。`);
+console.log(`校验通过：手机扫码版 + 电脑本地版；${SCENARIOS.length} 个病例，${rounds} 个回合，${options} 个带教学反馈的选项。`);

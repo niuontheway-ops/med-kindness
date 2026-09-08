@@ -111,6 +111,8 @@ a:focus-visible {
   cursor: pointer;
 }
 .nav-button:hover, .nav-button.active { color: var(--green-deep); background: var(--green-soft); }
+.qr-nav-button { color: white; background: var(--coral); }
+.qr-nav-button:hover { color: white; background: #ad5543; }
 
 main { min-height: calc(100vh - 74px); }
 .home-view { padding-bottom: 80px; }
@@ -364,6 +366,9 @@ main { min-height: calc(100vh - 74px); }
 .metric-explanation strong { display: block; font-size: 13px; }
 .metric-explanation p { margin: 3px 0 0; color: var(--ink-soft); font-size: 12px; }
 .metric-dialog > p { margin-bottom: 0; color: #7d8984; font-size: 11px; }
+.qr-dialog { max-width: 430px; text-align: center; }
+.qr-dialog img { display: block; width: min(280px, 90%); margin: 18px auto; border: 12px solid white; border-radius: 18px; box-shadow: var(--shadow-soft); image-rendering: pixelated; }
+.qr-dialog a { display: inline-block; margin-top: 10px; color: var(--green); font-weight: 800; word-break: break-all; }
 
 @media (max-width: 1150px) {
   .play-layout { grid-template-columns: 210px minmax(480px, 1fr); }

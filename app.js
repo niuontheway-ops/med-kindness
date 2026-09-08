@@ -487,6 +487,11 @@ function bindEvents() {
   els.metricDialog.addEventListener("click", (event) => {
     if (event.target === els.metricDialog) els.metricDialog.close();
   });
+  $("#mobileQrButton").addEventListener("click", () => $("#qrDialog").showModal());
+  $("#qrDialogClose").addEventListener("click", () => $("#qrDialog").close());
+  $("#qrDialog").addEventListener("click", (event) => {
+    if (event.target === $("#qrDialog")) $("#qrDialog").close();
+  });
   document.addEventListener("keydown", (event) => {
     if (els.caseView.hidden || state.answered || state.roundIndex < 0) return;
     const index = ["1", "2", "3"].indexOf(event.key);
