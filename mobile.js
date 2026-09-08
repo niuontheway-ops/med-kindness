@@ -13,11 +13,38 @@ const EMOTION_LABELS = {
   angry: "愤怒加剧",
   relieved: "稍感释然"
 };
+const DOCTOR_POSES = {
+  listen: "主动倾听",
+  empathy: "共情承接",
+  explain: "解释与共决",
+  urgent: "急症评估",
+  boundary: "温和设限"
+};
 
 function expressionAsset(actor, emotion) {
   if (!Object.hasOwn(EMOTION_LABELS, emotion) || emotion === "sad") return actor;
   const name = actor.split("/").at(-1).replace(/\.png$/i, "");
   return `assets/expressions/${name}-${emotion}.webp`;
+}
+
+function doctorAsset(pose) {
+  return `assets/doctors/doctor-${pose}.webp`;
+}
+
+function inferDoctorPose(round) {
+  const context = `${round.stage} ${round.prompt} ${round.text}`;
+  if (/急症|严重程度|生命支持|迅速恶化|危险信号|立即评估|呼吸循环|急救/.test(context)) return "urgent";
+  if (/边界|威胁|冲突|离院|拒绝|代理决策|设限|强制/.test(context)) return "boundary";
+  if (/解释|说明|告知|检测|知情|风险|方案|治疗|复述|核对|承接/.test(context)) return "explain";
+  if (/回应|感受|担忧|恐惧|悲伤|愤怒|道歉|愿望|希望|目标|价值/.test(context)) return "empathy";
+  return "listen";
+}
+
+function introDoctorPose(scenario) {
+  if (["急诊沟通", "急性传染性疾病"].includes(scenario.category)) return "urgent";
+  if (scenario.category === "冲突沟通") return "boundary";
+  if (["肿瘤与姑息", "缓和医疗", "ICU与生命末期"].includes(scenario.category)) return "empathy";
+  return "listen";
 }
 
 const els = {
@@ -35,9 +62,11 @@ const els = {
   progressFill: $("#mobileProgressFill"),
   stage: $("#mobileStage"),
   stageBg: $("#mobileStageBg"),
+  stageDoctor: $("#mobileStageDoctor"),
   stageActor: $("#mobileStageActor"),
   sceneLabel: $("#mobileSceneLabel"),
   emotionLabel: $("#mobileEmotionLabel"),
+  doctorPoseLabel: $("#mobileDoctorPoseLabel"),
   metricStrip: $("#mobileMetricStrip"),
   roundStage: $("#mobileRoundStage"),
   roundNumber: $("#mobileRoundNumber"),
@@ -82,8 +111,31 @@ function emptyState() {
     history: [],
     answered: false,
     changedMetrics: [],
-    emotion: "sad"
+    emotion: "sad",
+    doctorPose: "listen"
   };
+}
+
+function setStageLayout(scenario) {
+  els.stage.dataset.actorSide = scenario.actorSide === "right" ? "right" : "left";
+}
+
+function setDoctorPose(pose) {
+  state.doctorPose = Object.hasOwn(DOCTOR_POSES, pose) ? pose : "listen";
+  const source = mobileAsset(doctorAsset(state.doctorPose));
+  els.stageDoctor.src = source;
+  els.stageDoctor.alt = `医生，正在${DOCTOR_POSES[state.doctorPose]}`;
+  els.doctorPoseLabel.textContent = `医生 · ${DOCTOR_POSES[state.doctorPose]}`;
+  els.stageDoctor.classList.remove("pose-shift");
+  void els.stageDoctor.offsetWidth;
+  els.stageDoctor.classList.add("pose-shift");
+}
+
+function preloadDoctorPoses() {
+  Object.keys(DOCTOR_POSES).forEach((pose) => {
+    const image = new Image();
+    image.src = mobileAsset(doctorAsset(pose));
+  });
 }
 
 function setActorEmotion(emotion) {
@@ -213,8 +265,10 @@ function startCase(index) {
   els.stageBg.src = mobileAsset(scenario.background);
   els.stageBg.alt = scenario.scene;
   els.sceneLabel.textContent = scenario.scene;
+  setStageLayout(scenario);
   setActorEmotion(scenario.initialEmotion || "sad");
   preloadActorEmotions(scenario);
+  preloadDoctorPoses();
   history.replaceState(null, "", `#case=${scenario.id}`);
   renderMetrics();
   renderEvidence();
@@ -226,6 +280,7 @@ function renderIntro() {
   const scenario = SCENARIOS[state.scenarioIndex];
   state.roundIndex = -1;
   state.answered = false;
+  els.stage.className = "mobile-stage";
   els.roundStage.textContent = "场景序幕";
   els.roundNumber.textContent = `0 / ${scenario.rounds.length}`;
   els.speakerName.textContent = "场景旁白";
@@ -239,6 +294,7 @@ function renderIntro() {
     renderRound();
   });
   els.feedback.hidden = true;
+  setDoctorPose(introDoctorPose(scenario));
   els.undoButton.disabled = true;
   updateRoundProgress();
 }
@@ -256,6 +312,8 @@ function renderRound() {
   els.prompt.textContent = round.prompt;
   els.feedback.hidden = true;
   els.feedback.className = "mobile-feedback";
+  els.stage.className = "mobile-stage is-speaking-actor";
+  setDoctorPose(round.doctorPose || inferDoctorPose(round));
   els.options.innerHTML = round.options.map((choice, index) => `
     <button class="mobile-option" type="button" data-option-index="${index}">
       <span>${String.fromCharCode(65 + index)}</span><span>${choice.text}</span>
@@ -311,6 +369,7 @@ function chooseOption(optionIndex) {
   els.feedbackText.textContent = choice.feedback;
   els.continueButton.textContent = state.roundIndex === scenario.rounds.length - 1 ? "查看会谈复盘" : "继续下一回合";
   els.feedback.hidden = false;
+  els.stage.className = "mobile-stage is-speaking-doctor";
   els.undoButton.disabled = false;
   renderMetrics();
   renderEvidence();

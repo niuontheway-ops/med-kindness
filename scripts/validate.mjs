@@ -5,6 +5,8 @@ const failures = [];
 const ids = new Set();
 const allowedQualities = new Set(["excellent", "caution", "risky"]);
 const allowedEmotions = new Set(["sad", "afraid", "angry", "relieved"]);
+const allowedActorSides = new Set(["left", "right"]);
+const doctorPoses = ["listen", "empathy", "explain", "urgent", "boundary"];
 const metricKeys = new Set(Object.keys(METRICS));
 
 for (const required of [
@@ -34,9 +36,11 @@ for (const scenario of SCENARIOS) {
   if (!scenario.quote || !scenario.quoteBy) failures.push(`${scenario.id} 缺少开场引语或出处说明`);
   if (!scenario.debrief?.length) failures.push(`${scenario.id} 缺少复盘要点`);
   if (scenario.initialEmotion && !allowedEmotions.has(scenario.initialEmotion)) failures.push(`${scenario.id} 初始情绪无效：${scenario.initialEmotion}`);
+  if (!allowedActorSides.has(scenario.actorSide)) failures.push(`${scenario.id} 医患站位无效：${scenario.actorSide}`);
 
   for (const [roundIndex, round] of scenario.rounds.entries()) {
     if (round.options.length !== 3) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合不是 3 个选项`);
+    if (round.doctorPose && !doctorPoses.includes(round.doctorPose)) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合医生姿态无效：${round.doctorPose}`);
     for (const [optionIndex, choice] of round.options.entries()) {
       if (!allowedQualities.has(choice.quality)) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合选项 ${optionIndex + 1} 质量标记无效`);
       if (!allowedEmotions.has(choice.emotion)) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合选项 ${optionIndex + 1} 情绪标记无效`);
@@ -60,6 +64,18 @@ for (const scenario of SCENARIOS) {
       if (mobileStat.size > 150_000) failures.push(`${scenario.id} 手机素材过大：${mobileAsset}`);
     } catch {
       failures.push(`${scenario.id} 缺少手机素材：${mobileAsset}`);
+    }
+  }
+}
+
+for (const pose of doctorPoses) {
+  for (const [folder, maxBytes] of [["assets/doctors", 160_000], ["assets/mobile/doctors", 80_000]]) {
+    const asset = `${folder}/doctor-${pose}.webp`;
+    try {
+      const assetStat = await stat(new URL(`../${asset}`, import.meta.url));
+      if (assetStat.size > maxBytes) failures.push(`医生姿态素材过大：${asset}`);
+    } catch {
+      failures.push(`缺少医生姿态素材：${asset}`);
     }
   }
 }

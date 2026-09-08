@@ -127,16 +127,27 @@ main { width: min(100%, 760px); min-height: calc(100vh - 58px); margin: 0 auto; 
 .mobile-stage { position: relative; height: min(58vw, 350px); min-height: 230px; margin: 12px 12px 0; overflow: hidden; border-radius: 22px; background: #d8ccb7; box-shadow: 0 12px 30px rgba(35, 50, 45, .13); }
 .mobile-stage-bg { position: absolute; width: 100%; height: 100%; object-fit: cover; }
 .mobile-stage-shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(0deg, rgba(22,42,36,.35), transparent 48%), linear-gradient(90deg, rgba(22,42,36,.14), transparent 40%, rgba(22,42,36,.11)); transition: background .35s ease; }
-.mobile-stage-doctor, .mobile-stage-actor { position: absolute; z-index: 2; bottom: -50%; max-height: 150%; object-fit: contain; filter: drop-shadow(0 12px 16px rgba(0,0,0,.23)); animation: mobileCharacter .55s ease both; }
-.mobile-stage-doctor { right: -4%; width: min(43%, 235px); }
+.mobile-stage-doctor, .mobile-stage-actor { --facing: 1; position: absolute; z-index: 2; bottom: -50%; max-height: 150%; object-fit: contain; filter: drop-shadow(0 12px 16px rgba(0,0,0,.23)); transition: opacity .3s ease; animation: mobileCharacter .55s ease both; }
+.mobile-stage-doctor { right: -4%; bottom: -34%; width: min(43%, 235px); }
 .mobile-stage-actor { left: -4%; width: min(46%, 250px); animation-delay: .1s; }
+.mobile-stage[data-actor-side="right"] .mobile-stage-doctor { --facing: -1; right: auto; left: -4%; transform: scaleX(-1); }
+.mobile-stage[data-actor-side="right"] .mobile-stage-actor { right: -4%; left: auto; }
+.mobile-stage.is-speaking-actor .mobile-stage-doctor { opacity: .82; transform: scale(.97) scaleX(var(--facing)); }
+.mobile-stage.is-speaking-doctor .mobile-stage-actor { opacity: .82; transform: scale(.97) scaleX(var(--facing)); }
 .mobile-stage[data-emotion="angry"] .mobile-stage-shade { background: linear-gradient(0deg, rgba(22,42,36,.38), transparent 48%), linear-gradient(90deg, rgba(137,54,42,.2), transparent 50%); }
 .mobile-stage[data-emotion="afraid"] .mobile-stage-shade { background: linear-gradient(0deg, rgba(22,42,36,.4), transparent 48%), linear-gradient(90deg, rgba(49,77,97,.22), transparent 50%); }
+.mobile-stage[data-actor-side="right"][data-emotion="angry"] .mobile-stage-shade { background: linear-gradient(0deg, rgba(22,42,36,.38), transparent 48%), linear-gradient(270deg, rgba(137,54,42,.2), transparent 50%); }
+.mobile-stage[data-actor-side="right"][data-emotion="afraid"] .mobile-stage-shade { background: linear-gradient(0deg, rgba(22,42,36,.4), transparent 48%), linear-gradient(270deg, rgba(49,77,97,.22), transparent 50%); }
 .mobile-scene-label { position: absolute; z-index: 4; top: 12px; left: 12px; max-width: calc(100% - 24px); padding: 5px 9px; overflow: hidden; color: white; background: rgba(33,72,63,.76); border-radius: 999px; font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
 .mobile-emotion-label { position: absolute; z-index: 4; bottom: 11px; left: 11px; padding: 5px 8px; color: white; background: rgba(201,101,80,.84); border-radius: 999px; font-size: 9px; font-weight: 900; backdrop-filter: blur(6px); }
-.mobile-stage-actor.emotion-shift { animation: mobileEmotionShift .42s ease both; }
-@keyframes mobileCharacter { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-@keyframes mobileEmotionShift { 0% { opacity: .45; transform: translateY(7px) scale(.98); } 100% { opacity: 1; transform: none; } }
+.mobile-doctor-pose-label { position: absolute; z-index: 4; right: 11px; bottom: 11px; padding: 5px 8px; color: white; background: rgba(38,82,70,.82); border-radius: 999px; font-size: 9px; font-weight: 900; backdrop-filter: blur(6px); }
+.mobile-stage[data-actor-side="right"] .mobile-emotion-label { right: 11px; left: auto; }
+.mobile-stage[data-actor-side="right"] .mobile-doctor-pose-label { right: auto; left: 11px; }
+.mobile-stage-actor.emotion-shift { animation: mobileEmotionShift .42s ease; }
+.mobile-stage-doctor.pose-shift { animation: mobileDoctorPoseShift .4s ease; }
+@keyframes mobileCharacter { from { opacity: 0; transform: translateY(14px) scaleX(var(--facing)); } to { opacity: 1; transform: translateY(0) scaleX(var(--facing)); } }
+@keyframes mobileEmotionShift { 0% { opacity: .45; transform: translateY(7px) scale(.98) scaleX(var(--facing)); } 100% { opacity: 1; transform: translateY(0) scaleX(var(--facing)); } }
+@keyframes mobileDoctorPoseShift { 0% { opacity: .5; transform: translateY(6px) scale(.98) scaleX(var(--facing)); } 100% { opacity: 1; transform: translateY(0) scaleX(var(--facing)); } }
 
 .mobile-metric-strip { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 10px 12px; }
 .mobile-metric { min-width: 0; padding: 7px 3px; border-radius: 10px; background: rgba(255,253,248,.88); text-align: center; box-shadow: 0 3px 10px rgba(40,55,49,.05); }
@@ -235,6 +246,8 @@ main { width: min(100%, 760px); min-height: calc(100vh - 58px); margin: 0 auto; 
   .mobile-case-card { grid-template-columns: 92px 1fr; }
   .mobile-stage-doctor { right: -9%; width: 48%; }
   .mobile-stage-actor { left: -9%; width: 51%; }
+  .mobile-stage[data-actor-side="right"] .mobile-stage-doctor { right: auto; left: -9%; }
+  .mobile-stage[data-actor-side="right"] .mobile-stage-actor { right: -9%; left: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {

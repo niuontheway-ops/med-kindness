@@ -247,23 +247,32 @@ main { min-height: calc(100vh - 74px); }
 .stage { position: relative; min-height: clamp(320px, 43vw, 560px); overflow: hidden; border-radius: 24px 24px 8px 8px; background: #c9bda8; box-shadow: var(--shadow); }
 .stage-bg { position: absolute; width: 100%; height: 100%; object-fit: cover; object-position: center; animation: settle .8s ease both; }
 .stage-vignette { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgba(30, 48, 43, .24), transparent 35%, transparent 68%, rgba(30, 48, 43, .16)), linear-gradient(0deg, rgba(19, 35, 31, .22), transparent 40%); transition: background .35s ease; }
-.stage-doctor, .stage-actor { position: absolute; z-index: 2; bottom: -45%; max-height: 142%; object-fit: contain; filter: drop-shadow(0 16px 20px rgba(17, 27, 24, .25)); transition: transform .35s ease, opacity .35s ease; animation: characterIn .65s ease both; }
-.stage-doctor { right: 1%; width: min(37%, 330px); }
+.stage-doctor, .stage-actor { --facing: 1; position: absolute; z-index: 2; bottom: -45%; max-height: 142%; object-fit: contain; filter: drop-shadow(0 16px 20px rgba(17, 27, 24, .25)); transition: opacity .35s ease; animation: characterIn .65s ease both; }
+.stage-doctor { right: 1%; bottom: -28%; width: min(37%, 330px); }
 .stage-actor { left: 0; width: min(40%, 350px); animation-delay: .12s; }
-.stage.is-speaking-actor .stage-doctor { opacity: .83; transform: scale(.97); }
-.stage.is-speaking-doctor .stage-actor { opacity: .83; transform: scale(.97); }
+.stage[data-actor-side="right"] .stage-doctor { --facing: -1; right: auto; left: 1%; transform: scaleX(-1); }
+.stage[data-actor-side="right"] .stage-actor { right: 0; left: auto; }
+.stage.is-speaking-actor .stage-doctor { opacity: .83; transform: scale(.97) scaleX(var(--facing)); }
+.stage.is-speaking-doctor .stage-actor { opacity: .83; transform: scale(.97) scaleX(var(--facing)); }
 .stage[data-emotion="angry"] .stage-vignette { background: linear-gradient(90deg, rgba(127, 57, 43, .2), transparent 43%), linear-gradient(0deg, rgba(19, 35, 31, .24), transparent 42%); }
 .stage[data-emotion="afraid"] .stage-vignette { background: linear-gradient(90deg, rgba(51, 75, 93, .2), transparent 43%), linear-gradient(0deg, rgba(19, 35, 31, .28), transparent 42%); }
+.stage[data-actor-side="right"][data-emotion="angry"] .stage-vignette { background: linear-gradient(270deg, rgba(127, 57, 43, .2), transparent 43%), linear-gradient(0deg, rgba(19, 35, 31, .24), transparent 42%); }
+.stage[data-actor-side="right"][data-emotion="afraid"] .stage-vignette { background: linear-gradient(270deg, rgba(51, 75, 93, .2), transparent 43%), linear-gradient(0deg, rgba(19, 35, 31, .28), transparent 42%); }
 .scene-label { position: absolute; z-index: 5; top: 18px; left: 20px; padding: 7px 11px; color: white; background: rgba(30, 59, 52, .75); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; font-size: 11px; backdrop-filter: blur(5px); }
 .speaker-card { position: absolute; z-index: 5; bottom: 16px; padding: 6px 11px; color: white; background: rgba(29, 45, 41, .72); border-radius: 7px; font-size: 10px; font-weight: 700; backdrop-filter: blur(6px); }
 .doctor-tag { right: 18px; }
 .actor-tag { left: 18px; }
 .emotion-label { position: absolute; z-index: 5; bottom: 50px; left: 18px; padding: 5px 9px; color: white; background: rgba(201, 101, 80, .82); border-radius: 999px; font-size: 10px; font-weight: 800; backdrop-filter: blur(6px); }
-.stage-actor.emotion-shift { animation: emotionShift .45s ease both; }
+.stage[data-actor-side="right"] .doctor-tag { right: auto; left: 18px; }
+.stage[data-actor-side="right"] .actor-tag { right: 18px; left: auto; }
+.stage[data-actor-side="right"] .emotion-label { right: 18px; left: auto; }
+.stage-actor.emotion-shift { animation: emotionShift .45s ease; }
+.stage-doctor.pose-shift { animation: doctorPoseShift .45s ease; }
 
 @keyframes settle { from { transform: scale(1.04); filter: blur(2px); } to { transform: scale(1); filter: blur(0); } }
-@keyframes characterIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes emotionShift { 0% { opacity: .45; transform: translateY(8px) scale(.98); } 100% { opacity: 1; transform: none; } }
+@keyframes characterIn { from { opacity: 0; transform: translateY(18px) scaleX(var(--facing)); } to { opacity: 1; transform: translateY(0) scaleX(var(--facing)); } }
+@keyframes emotionShift { 0% { opacity: .45; transform: translateY(8px) scale(.98) scaleX(var(--facing)); } 100% { opacity: 1; transform: translateY(0) scaleX(var(--facing)); } }
+@keyframes doctorPoseShift { 0% { opacity: .5; transform: translateY(7px) scale(.98) scaleX(var(--facing)); } 100% { opacity: 1; transform: translateY(0) scaleX(var(--facing)); } }
 
 .conversation-card { position: relative; z-index: 8; margin: -4px 12px 0; padding: 24px clamp(20px, 3vw, 34px) 28px; border-radius: 6px 6px 24px 24px; background: var(--paper); box-shadow: var(--shadow); }
 .conversation-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 17px; color: #89948f; font-size: 11px; }
@@ -427,8 +436,10 @@ main { min-height: calc(100vh - 74px); }
   .case-rail { grid-template-columns: 1fr; }
   .evidence-card { grid-column: auto; }
   .stage { min-height: 300px; }
-  .stage-doctor { right: -6%; bottom: -37%; width: 48%; }
+  .stage-doctor { right: -6%; bottom: -24%; width: 48%; }
   .stage-actor { left: -5%; bottom: -38%; width: 52%; }
+  .stage[data-actor-side="right"] .stage-doctor { right: auto; left: -6%; }
+  .stage[data-actor-side="right"] .stage-actor { right: -5%; left: auto; }
   .conversation-card { margin: -4px 4px 0; padding: 20px 15px 24px; }
   .speaker-line { grid-template-columns: 36px 1fr; }
   .avatar { width: 36px; height: 36px; }
