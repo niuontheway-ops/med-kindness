@@ -36,9 +36,10 @@ http://127.0.0.1:4173/desktop.html
 
 ## 项目特点
 
-- 10 个深度临床情境，每个病例 8 个连续对话回合。
-- 共 80 个决策点、240 个选项，每个选项均有情境回应、能力变化与带教反馈。
-- 覆盖急诊胸痛、癌症初次告知、治疗无效、ICU 急剧恶化、代理决策冲突、晚期患者回家愿望、知情拒绝、谵妄与能力评估、死亡告知、言语威胁与人员安全。
+- 12 个深度临床情境，每个病例 8 个连续对话回合。
+- 共 96 个决策点、288 个选项，每个选项均有情境回应、能力变化与带教反馈。
+- 新增独立“缓和医疗”和“急性传染性疾病”板块，覆盖难治性呼吸困难、隔离沟通、隐私与家庭暴露计划。
+- 患者/家属固定在舞台左侧，医生在右侧；选择后人物会在悲伤、害怕、愤怒加剧与释然之间切换。
 - 同时评价医学信息、急症安全、患者理解、关系与信任、共同决策五个维度。
 - 支持撤回上一回合、关键信息记录、病例复盘、本机最佳成绩和分类搜索。
 - 响应式布局，支持键盘操作、减少动态效果和高对比度系统偏好。
@@ -60,9 +61,11 @@ node scripts/validate.mjs
 - [NICE NG197: Shared decision making](https://www.nice.org.uk/guidance/ng197)
 - [SCCM 2024 Guidelines on Family-Centered Care for Adult ICUs](https://www.sccm.org/clinical-resources/guidelines/guidelines/guidelines-on-family-centered-care-for-adult-icus-2024)
 - [AHRQ CANDOR](https://www.ahrq.gov/patient-safety/settings/hospital/candor/index.html)
+- [WHO: Palliative care](https://www.who.int/news-room/fact-sheets/detail/palliative-care)
+- [CDC: Preventing Transmission of Viral Respiratory Pathogens in Healthcare Settings](https://www.cdc.gov/infection-control/hcp/viral-respiratory-prevention/index.html)
 
 ## 素材与隐私
 
-人物与场景图为项目既有的生成式原创素材。本应用无后端，不收集或上传学习数据；成绩仅保存在浏览器 `localStorage` 中。
+人物、场景图及本次新增的 15 张情绪变体均为项目生成式原创素材。本应用无后端，不收集或上传学习数据；成绩仅保存在浏览器 `localStorage` 中。
 
 页面中的经典名言使用常见中文意译，仅用于叙事情境。若用于正式出版，应核对原始语种、版本与译文。

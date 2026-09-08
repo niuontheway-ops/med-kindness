@@ -4,6 +4,7 @@ import { SCENARIOS, METRICS, CATEGORIES } from "../scenarios.js";
 const failures = [];
 const ids = new Set();
 const allowedQualities = new Set(["excellent", "caution", "risky"]);
+const allowedEmotions = new Set(["sad", "afraid", "angry", "relieved"]);
 const metricKeys = new Set(Object.keys(METRICS));
 
 for (const required of [
@@ -23,7 +24,7 @@ for (const required of [
   }
 }
 
-if (SCENARIOS.length < 10) failures.push(`病例数不足：${SCENARIOS.length}`);
+if (SCENARIOS.length < 12) failures.push(`病例数不足：${SCENARIOS.length}`);
 
 for (const scenario of SCENARIOS) {
   if (ids.has(scenario.id)) failures.push(`病例 ID 重复：${scenario.id}`);
@@ -32,11 +33,13 @@ for (const scenario of SCENARIOS) {
   if (scenario.rounds.length < 8) failures.push(`${scenario.id} 只有 ${scenario.rounds.length} 回合`);
   if (!scenario.quote || !scenario.quoteBy) failures.push(`${scenario.id} 缺少开场引语或出处说明`);
   if (!scenario.debrief?.length) failures.push(`${scenario.id} 缺少复盘要点`);
+  if (scenario.initialEmotion && !allowedEmotions.has(scenario.initialEmotion)) failures.push(`${scenario.id} 初始情绪无效：${scenario.initialEmotion}`);
 
   for (const [roundIndex, round] of scenario.rounds.entries()) {
     if (round.options.length !== 3) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合不是 3 个选项`);
     for (const [optionIndex, choice] of round.options.entries()) {
       if (!allowedQualities.has(choice.quality)) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合选项 ${optionIndex + 1} 质量标记无效`);
+      if (!allowedEmotions.has(choice.emotion)) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合选项 ${optionIndex + 1} 情绪标记无效`);
       if (!choice.reply || !choice.feedback) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合选项 ${optionIndex + 1} 缺少反馈`);
       for (const key of Object.keys(choice.delta)) {
         if (!metricKeys.has(key)) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合使用未知评分维度：${key}`);
@@ -57,6 +60,21 @@ for (const scenario of SCENARIOS) {
       if (mobileStat.size > 150_000) failures.push(`${scenario.id} 手机素材过大：${mobileAsset}`);
     } catch {
       failures.push(`${scenario.id} 缺少手机素材：${mobileAsset}`);
+    }
+  }
+}
+
+const actorNames = new Set(SCENARIOS.map((scenario) => scenario.actor.split("/").at(-1).replace(/\.png$/i, "")));
+for (const actorName of actorNames) {
+  for (const emotion of ["relieved", "afraid", "angry"]) {
+    for (const [folder, maxBytes] of [["assets/expressions", 250_000], ["assets/mobile/expressions", 80_000]]) {
+      const asset = `${folder}/${actorName}-${emotion}.webp`;
+      try {
+        const assetStat = await stat(new URL(`../${asset}`, import.meta.url));
+        if (assetStat.size > maxBytes) failures.push(`情绪素材过大：${asset}`);
+      } catch {
+        failures.push(`缺少情绪素材：${asset}`);
+      }
     }
   }
 }

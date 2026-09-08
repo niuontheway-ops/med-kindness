@@ -7,21 +7,37 @@ const clamp = (value) => Math.min(100, Math.max(0, value));
 const mobileAsset = (path) => path
   .replace(/^assets\//, "assets/mobile/")
   .replace(/\.png$/i, ".webp");
+const EMOTION_LABELS = {
+  sad: "悲伤未解",
+  afraid: "恐惧加深",
+  angry: "愤怒加剧",
+  relieved: "稍感释然"
+};
+
+function expressionAsset(actor, emotion) {
+  if (!Object.hasOwn(EMOTION_LABELS, emotion) || emotion === "sad") return actor;
+  const name = actor.split("/").at(-1).replace(/\.png$/i, "");
+  return `assets/expressions/${name}-${emotion}.webp`;
+}
 
 const els = {
   home: $("#mobileHomeView"),
   player: $("#mobilePlayerView"),
   result: $("#mobileResultView"),
   completedCount: $("#mobileCompletedCount"),
+  totalCount: $("#mobileTotalCount"),
+  scenarioCount: $("#mobileScenarioCount"),
   filters: $("#mobileFilters"),
   search: $("#mobileSearch"),
   caseList: $("#mobileCaseList"),
   playerCategory: $("#mobilePlayerCategory"),
   playerTitle: $("#mobilePlayerTitle"),
   progressFill: $("#mobileProgressFill"),
+  stage: $("#mobileStage"),
   stageBg: $("#mobileStageBg"),
   stageActor: $("#mobileStageActor"),
   sceneLabel: $("#mobileSceneLabel"),
+  emotionLabel: $("#mobileEmotionLabel"),
   metricStrip: $("#mobileMetricStrip"),
   roundStage: $("#mobileRoundStage"),
   roundNumber: $("#mobileRoundNumber"),
@@ -33,6 +49,8 @@ const els = {
   options: $("#mobileOptions"),
   feedback: $("#mobileFeedback"),
   feedbackRating: $("#mobileFeedbackRating"),
+  reactionAvatar: $("#mobileReactionAvatar"),
+  reactionEmotionLabel: $("#mobileReactionEmotionLabel"),
   deltaSummary: $("#mobileDeltaSummary"),
   actorReply: $("#mobileActorReply"),
   feedbackText: $("#mobileFeedbackText"),
@@ -63,8 +81,33 @@ function emptyState() {
     evidence: [],
     history: [],
     answered: false,
-    changedMetrics: []
+    changedMetrics: [],
+    emotion: "sad"
   };
+}
+
+function setActorEmotion(emotion) {
+  const scenario = SCENARIOS[state.scenarioIndex];
+  if (!scenario) return;
+  state.emotion = Object.hasOwn(EMOTION_LABELS, emotion) ? emotion : "sad";
+  const source = mobileAsset(expressionAsset(scenario.actor, state.emotion));
+  els.stageActor.src = source;
+  els.stageActor.alt = `${scenario.actorName}，神情${EMOTION_LABELS[state.emotion]}`;
+  els.avatar.style.backgroundImage = `url("${source}")`;
+  els.reactionAvatar.style.backgroundImage = `url("${source}")`;
+  els.reactionEmotionLabel.textContent = EMOTION_LABELS[state.emotion];
+  els.emotionLabel.textContent = `情绪 · ${EMOTION_LABELS[state.emotion]}`;
+  els.stage.dataset.emotion = state.emotion;
+  els.stageActor.classList.remove("emotion-shift");
+  void els.stageActor.offsetWidth;
+  els.stageActor.classList.add("emotion-shift");
+}
+
+function preloadActorEmotions(scenario) {
+  ["relieved", "afraid", "angry"].forEach((emotion) => {
+    const image = new Image();
+    image.src = mobileAsset(expressionAsset(scenario.actor, emotion));
+  });
 }
 
 function readProgress() {
@@ -169,10 +212,9 @@ function startCase(index) {
   els.playerTitle.textContent = scenario.title;
   els.stageBg.src = mobileAsset(scenario.background);
   els.stageBg.alt = scenario.scene;
-  els.stageActor.src = mobileAsset(scenario.actor);
-  els.stageActor.alt = scenario.actorName;
   els.sceneLabel.textContent = scenario.scene;
-  els.avatar.style.backgroundImage = `url("${mobileAsset(scenario.actor)}")`;
+  setActorEmotion(scenario.initialEmotion || "sad");
+  preloadActorEmotions(scenario);
   history.replaceState(null, "", `#case=${scenario.id}`);
   renderMetrics();
   renderEvidence();
@@ -235,7 +277,8 @@ function chooseOption(optionIndex) {
   state.history.push({
     roundIndex: state.roundIndex,
     metrics: { ...state.metrics },
-    evidence: [...state.evidence]
+    evidence: [...state.evidence],
+    emotion: state.emotion
   });
   state.answered = true;
   state.changedMetrics = Object.keys(choice.delta);
@@ -246,6 +289,7 @@ function chooseOption(optionIndex) {
   choice.evidence.forEach((item) => {
     if (!state.evidence.includes(item)) state.evidence.push(item);
   });
+  setActorEmotion(choice.emotion);
 
   els.options.querySelectorAll("button").forEach((button, index) => {
     button.disabled = true;
@@ -291,7 +335,9 @@ function undoChoice() {
   state.roundIndex = previous.roundIndex;
   state.metrics = { ...previous.metrics };
   state.evidence = [...previous.evidence];
+  state.emotion = previous.emotion;
   renderRound();
+  setActorEmotion(previous.emotion);
 }
 
 function updateRoundProgress() {
@@ -400,6 +446,8 @@ function bindEvents() {
 }
 
 function init() {
+  els.totalCount.textContent = SCENARIOS.length;
+  els.scenarioCount.textContent = SCENARIOS.length;
   renderFilters();
   renderCases();
   updateCompletedCount();

@@ -17,7 +17,7 @@
       <strong>有温度的问诊室</strong>
     </button>
     <button class="progress-pill" id="mobileProgressButton" type="button">
-      <span id="mobileCompletedCount">0</span>/10 已完成
+      <span id="mobileCompletedCount">0</span>/<span id="mobileTotalCount">12</span> 已完成
     </button>
   </header>
 
@@ -40,7 +40,7 @@
       <section class="mobile-library" aria-labelledby="mobileLibraryTitle">
         <div class="mobile-section-title">
           <div>
-            <p class="mobile-eyebrow">10 个深度情境</p>
+            <p class="mobile-eyebrow"><span id="mobileScenarioCount">12</span> 个深度情境</p>
             <h2 id="mobileLibraryTitle">选择病例</h2>
           </div>
           <button class="filter-trigger" id="filterTrigger" type="button" aria-expanded="false">筛选</button>
@@ -78,6 +78,7 @@
         <img class="mobile-stage-doctor" src="assets/mobile/doctor.webp" alt="医生" decoding="async">
         <img class="mobile-stage-actor" id="mobileStageActor" src="assets/mobile/lin-lan.webp" alt="患者或家属" decoding="async">
         <span class="mobile-scene-label" id="mobileSceneLabel">—</span>
+        <span class="mobile-emotion-label" id="mobileEmotionLabel">情绪 · 悲伤未解</span>
       </div>
 
       <div class="mobile-metric-strip" id="mobileMetricStrip" aria-label="能力变化"></div>
@@ -102,6 +103,10 @@
           <div class="mobile-feedback-title">
             <strong id="mobileFeedbackRating">回应评析</strong>
             <span id="mobileDeltaSummary"></span>
+          </div>
+          <div class="mobile-reaction-strip">
+            <div class="mobile-reaction-avatar" id="mobileReactionAvatar" aria-hidden="true"></div>
+            <div><span>人物反应</span><strong id="mobileReactionEmotionLabel">悲伤未解</strong></div>
           </div>
           <blockquote id="mobileActorReply">—</blockquote>
           <div class="mobile-teaching">
