@@ -1,0 +1,10 @@
+{
+  "name": "med-kindness",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node scripts/validate.mjs",
+    "serve": "node scripts/serve.mjs"
+  }
+}
