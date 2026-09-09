@@ -141,6 +141,31 @@ main { min-height: calc(100vh - 74px); }
   padding: 60px clamp(30px, 5vw, 84px);
 }
 
+.hulan-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 26px;
+  color: var(--green-deep);
+}
+
+.hulan-logo-mark {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  color: #fff8e8;
+  background: var(--green);
+  border-radius: 50% 50% 46% 54%;
+  font-family: "Noto Serif SC", serif;
+  font-size: 21px;
+  font-weight: 900;
+  box-shadow: inset -5px -5px 0 rgba(0, 0, 0, .08);
+}
+
+.hulan-logo strong { display: block; font-family: "Noto Serif SC", serif; font-size: 19px; letter-spacing: .12em; }
+.hulan-logo small { display: block; margin-top: 1px; color: #65746f; font-size: 11px; letter-spacing: .03em; }
+
 .eyebrow {
   margin: 0 0 12px;
   color: var(--coral);
