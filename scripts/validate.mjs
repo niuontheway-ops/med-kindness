@@ -1,5 +1,6 @@
 import { access, stat } from "node:fs/promises";
 import { SCENARIOS, METRICS, CATEGORIES } from "../scenarios.js";
+import { actorStaging, stagedDoctorAsset } from "../stage-layout.js";
 
 const failures = [];
 const ids = new Set();
@@ -37,6 +38,16 @@ for (const scenario of SCENARIOS) {
   if (!scenario.debrief?.length) failures.push(`${scenario.id} 缺少复盘要点`);
   if (scenario.initialEmotion && !allowedEmotions.has(scenario.initialEmotion)) failures.push(`${scenario.id} 初始情绪无效：${scenario.initialEmotion}`);
   if (!allowedActorSides.has(scenario.actorSide)) failures.push(`${scenario.id} 医患站位无效：${scenario.actorSide}`);
+  if (!actorStaging(scenario)) failures.push(`${scenario.id} 缺少人物坐立与朝向标记`);
+  for (const pose of doctorPoses) {
+    for (const mobile of [false, true]) {
+      const path = stagedDoctorAsset(scenario, pose).replace(/^assets\//, mobile ? "assets/mobile/" : "assets/");
+      try {
+        const info = await stat(new URL(`../${path}`, import.meta.url));
+        if (info.size > (mobile ? 80000 : 160000)) failures.push(`姿态素材过大：${path}`);
+      } catch { failures.push(`缺少与对方坐立匹配的素材：${path}`); }
+    }
+  }
 
   for (const [roundIndex, round] of scenario.rounds.entries()) {
     if (round.options.length !== 3) failures.push(`${scenario.id} 第 ${roundIndex + 1} 回合不是 3 个选项`);

@@ -1,4 +1,5 @@
 import { SCENARIOS, METRICS, CATEGORIES } from "./scenarios.js";
+import { actorStaging, stagedDoctorAsset, stageCharacter, observeStage } from "./stage-layout.js?v=face-to-face-2";
 
 const STORAGE_KEY = "med-kindness-progress-v1";
 const INITIAL_SCORE = 60;
@@ -27,7 +28,7 @@ function expressionAsset(actor, emotion) {
 }
 
 function doctorAsset(pose) {
-  return `assets/doctors/doctor-${pose}.webp`;
+  return stagedDoctorAsset(SCENARIOS[state.scenarioIndex], pose);
 }
 
 function inferDoctorPose(round) {
@@ -109,6 +110,7 @@ const els = {
 };
 
 const views = [els.homeView, els.caseView, els.resultView, els.progressView, els.aboutView];
+observeStage(els.stage);
 let selectedCategory = "全部";
 let state = createEmptyState();
 
@@ -127,10 +129,14 @@ function createEmptyState() {
 
 function setStageLayout(scenario) {
   els.stage.dataset.actorSide = scenario.actorSide === "right" ? "right" : "left";
+  els.stage.dataset.posture = actorStaging(scenario).posture;
 }
 
 function setDoctorPose(pose) {
   state.doctorPose = Object.hasOwn(DOCTOR_POSES, pose) ? pose : "listen";
+  const scenario = SCENARIOS[state.scenarioIndex];
+  const { posture } = actorStaging(scenario);
+  stageCharacter(els.stageDoctor, scenario.actorSide === "left" ? "right" : "left", "left", posture, posture === "standing" ? .13 : .16);
   els.stageDoctor.src = doctorAsset(state.doctorPose);
   els.stageDoctor.alt = `医生，正在${DOCTOR_POSES[state.doctorPose]}`;
   els.doctorTag.textContent = `你 · 接诊医生 · ${DOCTOR_POSES[state.doctorPose]}`;
@@ -149,6 +155,8 @@ function preloadDoctorPoses() {
 function setActorEmotion(emotion) {
   const scenario = SCENARIOS[state.scenarioIndex];
   if (!scenario) return;
+  const staging = actorStaging(scenario);
+  stageCharacter(els.stageActor, scenario.actorSide, staging.facing, staging.posture, staging.eye);
   state.emotion = Object.hasOwn(EMOTION_LABELS, emotion) ? emotion : "sad";
   const source = expressionAsset(scenario.actor, state.emotion);
   els.stageActor.src = source;
