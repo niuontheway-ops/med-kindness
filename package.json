@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build:offline": "node scripts/build-standalone.mjs",
     "check": "node scripts/validate.mjs",
     "serve": "node scripts/serve.mjs"
   }
